@@ -2,9 +2,9 @@
 
 Information depends_on Meta-Argument [See documentation](https://www.terraform.io/language/meta-arguments/depends_on) 
 
-This repository shows en example on the effect of the depends_on Meta-Argument. With depends_on you can make sure a resource/module only starts after another resource/module is created. 
+This repository shows en example on the effect of the depends_on meta-argument. With depends_on you can make sure a resource only starts after another resource is created. 
 
-In this example you will create 2 resources without a depends_on meta-argument to see that happens. After that you will do it again with the depends_on meta-argument and see the difference 
+In this example you will create 2 resources without a depends_on meta-argument to see what happens. After that you will do it again with the depends_on meta-argument and see the difference 
 
 # Prerequisites
 
@@ -72,7 +72,7 @@ terraform plan
 ```
 terraform apply
 ```
-- Sample output. Notice that the ```module.kitchen``` is finished before the ```null_resource.house```
+- Sample output. Notice that the ```null_resource.house``` is finished before the creation of ```module.kitchen```
 ```
 null_resource.house: Creating...
 null_resource.house: Provisioning with 'local-exec'...
@@ -88,7 +88,6 @@ module.kitchen.null_resource.kitchen (local-exec): Executing: ["/bin/sh" "-c" "e
 module.kitchen.null_resource.kitchen (local-exec): kitchen created
 module.kitchen.null_resource.kitchen: Creation complete after 0s [id=7354424909908622816]
 ```
-- You can see now that the ```module.kitchen``` is created after the ```null_resource.house``` is completed
 - destroy the resources
 ```
 terraform destroy
