@@ -33,21 +33,21 @@ terraform plan
 ```
 terraform apply
 ```
-- Sample output. Notice that the ```module.module_resource``` is finished before the ```null_resource.resource```
+- Sample output. Notice that the ```module.kitchen``` is finished before the ```null_resource.house```
 ```
-module.module_resource.null_resource.module_resource: Creating...
-null_resource.resource: Creating...
-null_resource.resource: Provisioning with 'local-exec'...
-module.module_resource.null_resource.module_resource: Provisioning with 'local-exec'...
-null_resource.resource (local-exec): Executing: ["/bin/sh" "-c" "sleep 30; echo local resource created"]
-module.module_resource.null_resource.module_resource (local-exec): Executing: ["/bin/sh" "-c" "echo module resource created"]
-module.module_resource.null_resource.module_resource (local-exec): module resource created
-module.module_resource.null_resource.module_resource: Creation complete after 0s [id=1234333813305783273]
-null_resource.resource: Still creating... [10s elapsed]
-null_resource.resource: Still creating... [20s elapsed]
-null_resource.resource: Still creating... [30s elapsed]
-null_resource.resource (local-exec): local resource created
-null_resource.resource: Creation complete after 30s [id=8198074707940764220]
+null_resource.house: Creating...
+module.kitchen.null_resource.kitchen: Creating...
+null_resource.house: Provisioning with 'local-exec'...
+module.kitchen.null_resource.kitchen: Provisioning with 'local-exec'...
+module.kitchen.null_resource.kitchen (local-exec): Executing: ["/bin/sh" "-c" "echo kitchen created"]
+null_resource.house (local-exec): Executing: ["/bin/sh" "-c" "sleep 30; echo house created"]
+module.kitchen.null_resource.kitchen (local-exec): kitchen created
+module.kitchen.null_resource.kitchen: Creation complete after 0s [id=6646662656843082961]
+null_resource.house: Still creating... [10s elapsed]
+null_resource.house: Still creating... [20s elapsed]
+null_resource.house: Still creating... [30s elapsed]
+null_resource.house (local-exec): house created
+null_resource.house: Creation complete after 30s [id=8862914283677352602]
 
 Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 ```
@@ -55,14 +55,41 @@ Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 ```
 terraform destroy
 ```
-- alter the file ```main.tf``` and change the module resource to add a depends_on for the first resource.
+- You want to create the house before creating the kitchen
+- alter the file ```main.tf``` and change the ```module_kitchen``` to add a depends_on for the ```null_resource.house```
 ```
-module "module_resource" {
-  source     = "./module"
-  depends_on = [null_resource.resource]
+module "kitchen" {
+  source     = "./module_kitchen"
+  depends_on = [null_resource.house]
 }
 ```
-- With this change the ```module_resource``` should be created after the house
+- With this change the ```module_kitchen``` should be created after the ```null_resource.house```
+- Terraform plan
 ```
-
+terraform plan
+```
+- Terraform apply
+```
+terraform apply
+```
+- Sample output. Notice that the ```module.kitchen``` is finished before the ```null_resource.house```
+```
+null_resource.house: Creating...
+null_resource.house: Provisioning with 'local-exec'...
+null_resource.house (local-exec): Executing: ["/bin/sh" "-c" "sleep 30; echo house created"]
+null_resource.house: Still creating... [10s elapsed]
+null_resource.house: Still creating... [20s elapsed]
+null_resource.house: Still creating... [30s elapsed]
+null_resource.house (local-exec): house created
+null_resource.house: Creation complete after 30s [id=115363329527945069]
+module.kitchen.null_resource.kitchen: Creating...
+module.kitchen.null_resource.kitchen: Provisioning with 'local-exec'...
+module.kitchen.null_resource.kitchen (local-exec): Executing: ["/bin/sh" "-c" "echo kitchen created"]
+module.kitchen.null_resource.kitchen (local-exec): kitchen created
+module.kitchen.null_resource.kitchen: Creation complete after 0s [id=7354424909908622816]
+```
+- You can see now that the ```module.kitchen``` is created after the ```null_resource.house``` is completed
+- destroy the resources
+```
+terraform destroy
 ```
