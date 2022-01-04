@@ -6,4 +6,5 @@ resource "null_resource" "house" {
 
 module "kitchen" {
   source     = "./module_kitchen"
+  depends_on = [null_resource.house]
 }
