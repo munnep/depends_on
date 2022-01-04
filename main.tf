@@ -1,9 +1,9 @@
-resource "null_resource" "resource" {
+resource "null_resource" "house" {
   provisioner "local-exec" {
-    command = "sleep 30; echo local resource created"
+    command = "sleep 30; echo house created"
   }
 }
 
-module "module_resource" {
-  source     = "./module"
+module "kitchen" {
+  source     = "./module_kitchen"
 }
